@@ -48,4 +48,42 @@ describe('CaixaDaLanchonete', () => {
         ['queijo com outro item', 'debito', 'Item extra não pode ser pedido sem o principal', ['cafe,1', 'queijo,1']],
     ])('compra %p em %p deve resultar em %p', (_, formaDePagamento, resultadoEsperado, itens) =>
         validaTeste(formaDePagamento, resultadoEsperado, itens));
+
+        test('compra de combo', () => {
+            validaTeste('credito', 'R$ 9,79', ['combo1,1']);
+            validaTeste('debito', 'R$ 9,50', ['combo1,1']);
+        });
+    
+        test('compra de múltiplos combos', () => {
+            validaTeste('dinheiro', 'R$ 14,25', ['combo2,2']);
+            validaTeste('credito', 'R$ 15,45', ['combo2,2']);
+            validaTeste('debito', 'R$ 15,00', ['combo2,2']);
+        });
+        
+        test('compra de combo com itens extras', () => {
+            validaTeste('credito', 'Item extra não pode ser pedido sem o principal', ['combo1,1', 'queijo,1']);
+            validaTeste('debito', 'Item extra não pode ser pedido sem o principal', ['combo1,1', 'queijo,1']);
+            validaTeste('dinheiro', 'Item extra não pode ser pedido sem o principal', ['combo1,1', 'chantily,1']);
+        });
+    
+        test('compra de combo inválido', () => {
+            validaTeste('credito', 'Item inválido!', ['combo3,1']);
+        });
+    
+        test('compra de café com chantily', () => {
+            validaTeste('credito', 'R$ 4,63', ['cafe,1', 'chantily,1']);
+        });
+    
+        test('compra de chantily sem café', () => {
+            validaTeste('credito', 'Item extra não pode ser pedido sem o principal', ['chantily,1']);
+        });
+    
+        test('compra de sanduíche com queijo', () => {
+            validaTeste('debito', 'R$ 8,50', ['sanduiche,1', 'queijo,1']);
+        });
+
+        test('compra de sanduíche com queijo e chantily', () => {
+            validaTeste('credito', 'Item extra não pode ser pedido sem o principal', ['sanduiche,1', 'queijo,1', 'chantily,1']);
+        }
+    );
 });
